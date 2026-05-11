@@ -25,7 +25,8 @@ void card::setNext(card* next){
 
 
 bool card::operator==(const card& other) const {
-    return value == other.value && name == other.name;
+    return (value == other.value && name == other.name);
+    
 }
 std::ostream& operator<<(std::ostream& os, const card& c) {
     os << c.getValue() << " " << c.getName();

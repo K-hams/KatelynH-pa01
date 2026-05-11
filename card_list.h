@@ -57,7 +57,7 @@ class player{
         void setName(std::string nN){
             name = nN;
         }
-        hand getHand(){
+        hand& getHand(){
             return myHand;
         }
     
