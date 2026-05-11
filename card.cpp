@@ -29,7 +29,7 @@ bool card::operator==(const card& other) const {
     
 }
 std::ostream& operator<<(std::ostream& os, const card& c) {
-    os << c.getValue() << " " << c.getName();
+    os << c.getName() << " " << c.getValue();
     return os;
 }
 
