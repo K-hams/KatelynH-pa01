@@ -13,7 +13,7 @@ class card{
         //default constructor
         card(): value('0'), name('a'), nextCard(nullptr){}
         //card with values
-        card(char val, char n): name(val), value(n), nextCard(nullptr){}
+        card(char val, char n): value(val), name(n), nextCard(nullptr){}
 
         //funcs
         char getName() const;
