@@ -39,6 +39,53 @@ int main(int argv, char** argc){
   }
   cardFile2.close();
   
+  //starting the game here:
+    card* aliceCurr = alice.getHand().getHead();
+    card* bobCurr   = bob.getHand().getHead();
+
+    bool matchFound = true;
+    while (matchFound) {
+        matchFound = false;
+
+        // Alice's turn
+        while (aliceCurr != nullptr) {
+            card* nextAlice = aliceCurr->getNext();  // save BEFORE remove
+            if (bob.getHand().search(*aliceCurr)) {
+                cout << "Alice picked matching card " << *aliceCurr << endl;
+                card matched = *aliceCurr;
+                alice.getHand().remove(matched);
+                bob.getHand().remove(matched);
+                aliceCurr = nextAlice;
+                matchFound = true;
+                break;
+            }
+            aliceCurr = aliceCurr->getNext();
+        }
+        if (!matchFound) break;
+
+        matchFound = false;
+
+        // Bob's turn
+        while (bobCurr != nullptr) {
+            card* nextBob = bobCurr->getNext();      // save BEFORE remove
+            if (alice.getHand().search(*bobCurr)) {
+                cout << "Bob picked matching card " << *bobCurr << endl;
+                card matched = *bobCurr;
+                alice.getHand().remove(matched);
+                bob.getHand().remove(matched);
+                bobCurr = nextBob;
+                matchFound = true;
+                break;
+            }
+            bobCurr = bobCurr->getNext();
+        }
+    }
+
+   
+    cout << "\nAlice's cards:" << endl;
+    alice.getHand().print();
+    cout << "\nBob's cards:" << endl;
+    bob.getHand().print();
   
   return 0;
 }
