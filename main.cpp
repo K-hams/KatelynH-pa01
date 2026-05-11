@@ -22,16 +22,20 @@ int main(int argv, char** argc){
     cout << "Could not open file " << argc[2];
     return 1;
   }
-
+  player alice("Alice");
+  player bob("Bob");
   //Read each file
   while (getline (cardFile1, line) && (line.length() > 0)){
+    card newCard(line[0],line[2]);
+    alice.getHand().insert(newCard);
 
   }
   cardFile1.close();
 
 
   while (getline (cardFile2, line) && (line.length() > 0)){
-
+    card newCard(line[0], line[2]);
+    bob.getHand().insert(newCard);
   }
   cardFile2.close();
   
