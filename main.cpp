@@ -26,12 +26,6 @@ int main(int argv, char** argc){
   player bob("Bob");
   //Read each file
   while (getline (cardFile1, line) && (line.length() > 0)){
-    if (!line.empty() && line.back() == '\r') {
-        line.pop_back();
-    }
-    if (line.length() == 0) break;
-    
-    cout << "inserting: " << line[0] << " " << line[2] << endl; // debug
     card newCard(line[0], line[2]);
     alice.getHand().insert(newCard);
 
