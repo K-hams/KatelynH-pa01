@@ -9,7 +9,7 @@ char card::getName() const{
     return name;
 }
 
-char card::getValue() const{
+string card::getValue() const{
     return value;
 }
 

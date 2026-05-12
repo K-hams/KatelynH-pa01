@@ -6,18 +6,18 @@
 #define CARD_H
 
 #include <iostream>
-
+using namespace std;
 //node aka card
 class card{
     public:
         //default constructor
-        card(): value('0'), name('a'), nextCard(nullptr){}
+        card(): value("0"), name('a'), nextCard(nullptr){}
         //card with values
-        card(char val, char n): value(n), name(val), nextCard(nullptr){}
+        card(char val, string n): value(n), name(val), nextCard(nullptr){}
 
         //funcs
         char getName() const;
-        char getValue() const;
+        string getValue() const;
         card* getNext() const;
         void setNext(card* next);
 
@@ -33,7 +33,7 @@ class card{
         friend std::ostream& operator<<(std::ostream& os, const card& c);
 
     private:
-        char value;
+        string value;
         char name; 
         card* nextCard;
        

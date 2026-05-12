@@ -25,7 +25,7 @@ int main(int argv, char** argc){
   player alice("Alice");
   player bob("Bob");
   //Read each file
-  while (getline (cardFile1, line) && (line.length() > 0)){
+  /*while (getline (cardFile1, line) && (line.length() > 0)){
     card newCard(line[0], line[2]);
     alice.getHand().insert(newCard);
 
@@ -36,7 +36,20 @@ int main(int argv, char** argc){
   while (getline (cardFile2, line) && (line.length() > 0)){
     card newCard(line[0], line[2]);
     bob.getHand().insert(newCard);
-  }
+  }*/
+  while (getline(cardFile1, line) && line.length() > 0) {
+    if (!line.empty() && line.back() == '\r') line.pop_back();
+    char suit = line[0];
+    std::string face = line.substr(2);  // grabs "10", "a", "k", etc.
+    alice.getHand().insert(card(suit, face));
+}
+
+while (getline(cardFile2, line) && line.length() > 0) {
+    if (!line.empty() && line.back() == '\r') line.pop_back();
+    char suit = line[0];
+    std::string face = line.substr(2);
+    bob.getHand().insert(card(suit, face));
+}
   cardFile2.close();
   
   //starting the game here:
@@ -47,7 +60,7 @@ int main(int argv, char** argc){
     while (matchFound) {
         matchFound = false;
 
-        // Alice's turn
+        // Alice
         while (aliceCurr != nullptr) {
             card* nextAlice = aliceCurr->getNext();  // save BEFORE remove
             if (bob.getHand().search(*aliceCurr)) {
@@ -65,7 +78,7 @@ int main(int argv, char** argc){
 
         matchFound = false;
 
-        // Bob's turn
+        // Bob
         while (bobCurr != nullptr) {
             card* nextBob = bobCurr->getNext();      // save BEFORE remove
             if (alice.getHand().search(*bobCurr)) {
