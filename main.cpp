@@ -26,14 +26,14 @@ int main(int argv, char** argc){
 
   player alice("Alice");
   player bob("Bob");
-  
+
  while (getline(cardFile1, line) && line.length() > 0) {
     if (!line.empty() && line.back() == '\r') line.pop_back();
     char suit = line[0];
     string face = line.substr(2);
     alice.getHand().insert(card(suit, face));
 }
-cardFile1.close();  // add this back
+cardFile1.close();  
 
 while (getline(cardFile2, line) && line.length() > 0) {
     if (!line.empty() && line.back() == '\r') line.pop_back();
@@ -43,50 +43,58 @@ while (getline(cardFile2, line) && line.length() > 0) {
 }
 cardFile2.close();
 
-card* aliceCurr = alice.getHand().getHead();
-card* bobCurr   = bob.getHand().getHead();
+       card* aliceCurr = alice.getHand().getHead();
+    card* bobCurr   = bob.getHand().getHead();
 
-bool matchFound = true;
-while (matchFound) {
-    matchFound = false;
+    bool matchFound = true;
+    while (matchFound) {
+        matchFound = false;
 
-    // Alice's turn
-    while (aliceCurr != nullptr) {
-        card* nextAlice = aliceCurr->getNext();
-        if (bob.getHand().search(*aliceCurr)) {
-            card matched = *aliceCurr;
-            alice.getHand().remove(matched);
-            bob.getHand().remove(matched);
+        // Alice's turn
+        while (aliceCurr != nullptr) {
+            card* nextAlice = aliceCurr->getNext();
+            if (bob.getHand().search(*aliceCurr)) {
+                card matched = *aliceCurr;
+                // advance bobCurr if it points to the card being removed
+                if (bobCurr != nullptr && *bobCurr == matched) {
+                    bobCurr = bobCurr->getNext();
+                }
+                alice.getHand().remove(matched);
+                bob.getHand().remove(matched);
+                aliceCurr = nextAlice;
+                cout << "Alice picked matching card " << matched << endl;
+                matchFound = true;
+                break;
+            }
             aliceCurr = nextAlice;
-            cout << "Alice picked matching card " << matched << endl;
-            matchFound = true;
-            break;
         }
-        aliceCurr = nextAlice;  // use nextAlice, not getNext()
-    }
-    if (!matchFound) break;
-    matchFound = false;
+        if (!matchFound) break;
+        matchFound = false;
 
-    // Bob's turn
-    while (bobCurr != nullptr) {
-        card* nextBob = bobCurr->getNext();
-        if (alice.getHand().search(*bobCurr)) {
-            card matched = *bobCurr;
-            alice.getHand().remove(matched);
-            bob.getHand().remove(matched);
+        // Bob's turn
+        while (bobCurr != nullptr) {
+            card* nextBob = bobCurr->getNext();
+            if (alice.getHand().search(*bobCurr)) {
+                card matched = *bobCurr;
+                // advance aliceCurr if it points to the card being removed
+                if (aliceCurr != nullptr && *aliceCurr == matched) {
+                    aliceCurr = aliceCurr->getNext();
+                }
+                alice.getHand().remove(matched);
+                bob.getHand().remove(matched);
+                bobCurr = nextBob;
+                cout << "Bob picked matching card " << matched << endl;
+                matchFound = true;
+                break;
+            }
             bobCurr = nextBob;
-            cout << "Bob picked matching card " << matched << endl;
-            matchFound = true;
-            break;
         }
-        bobCurr = nextBob;  // use nextBob, not getNext()
     }
-}
 
-cout << "\nAlice's cards:" << endl;
-alice.getHand().print();
-cout << "\nBob's cards:" << endl;
-bob.getHand().print();
+    cout << "\nAlice's cards:" << endl;
+    alice.getHand().print();
+    cout << "\nBob's cards:" << endl;
+    bob.getHand().print();
 
-return 0;
+    return 0;
 }
