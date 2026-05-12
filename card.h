@@ -12,8 +12,9 @@ using namespace std;
 //node aka card
 class card {
 public:
-    card() : suit(' '), value(0), left(nullptr), right(nullptr) {}
-    card(char s, int v) : suit(s), value(v), left(nullptr), right(nullptr) {}
+    card *left, *right;
+    card() : left(nullptr), right(nullptr), suit(' '), value(0){}
+    card(char s, int v) : left(nullptr), right(nullptr), suit(s), value(v){}
 
     char getSuit() const { return suit; }
     int getValue() const { return value; }
@@ -25,11 +26,12 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const card& c);
 
-    card *left, *right;
+    
 
 private:
+    
     char suit;
-    int value; // Stored as 1-13
+    int value; 
 };
 /*
 class card{

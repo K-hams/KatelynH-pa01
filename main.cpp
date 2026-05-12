@@ -1,66 +1,112 @@
-// This file should implement the game using a custom implementation of a BST (based on your earlier BST implementation)
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "card.h"
 #include "card_list.h"
-//Do not include set in this file
-
 
 using namespace std;
 
-
+// Helper function to convert rank strings to integers for mathematical sorting
 int getVal(string s) {
     if (s == "a") return 1;
     if (s == "j") return 11;
     if (s == "q") return 12;
     if (s == "k") return 13;
-    return stoi(s);
+    try {
+        return stoi(s);
+    } catch (...) {
+        return 0; // Fallback for safety
+    }
 }
 
 int main(int argc, char** argv) {
-    if (argc < 3) return 1;
-    ifstream f1(argv[1]), f2(argv[2]);
-    player alice("Alice"), bob("Bob");
-    string s, v; char suit;
+    if (argc < 3) {
+        cout << "Please provide 2 file names" << endl;
+        return 1;
+    }
 
-    while (f1 >> suit >> v) alice.getHand().insert(suit, getVal(v));
-    while (f2 >> suit >> v) bob.getHand().insert(suit, getVal(v));
+    ifstream f1(argv[1]);
+    ifstream f2(argv[2]);
+
+    if (f1.fail() || f2.fail()) {
+        return 1;
+    }
+
+    player alice("Alice");
+    player bob("Bob");
+
+    char suit;
+    string face;
+
+    // Read files and populate BSTs
+    while (f1 >> suit >> face) {
+        alice.getHand().insert(suit, getVal(face));
+    }
+    while (f2 >> suit >> face) {
+        bob.getHand().insert(suit, getVal(face));
+    }
+
+    f1.close();
+    f2.close();
 
     bool aliceTurn = true;
     while (true) {
-        bool found = false;
+        bool foundMatchInThisTurn = false;
+
         if (aliceTurn) {
+            // Alice starts from her smallest card
             card* curr = alice.getHand().getMin(alice.getHand().getRoot());
-            while (curr) {
+            while (curr != nullptr) {
+                // IMPORTANT: Save the successor BEFORE any potential removal
+                card* nextInOrder = alice.getHand().successor(*curr);
+
                 if (bob.getHand().search(*curr)) {
                     cout << "Alice picked matching card " << *curr << endl;
-                    card match = *curr;
-                    alice.getHand().remove(match);
-                    bob.getHand().remove(match);
-                    found = true; break;
+                    card toRemove = *curr;
+                    
+                    alice.getHand().remove(toRemove);
+                    bob.getHand().remove(toRemove);
+                    
+                    foundMatchInThisTurn = true;
+                    break; // Alice's turn ends after one match
                 }
-                curr = alice.getHand().successor(*curr);
+                curr = nextInOrder;
             }
         } else {
+            // Bob starts from his largest card
             card* curr = bob.getHand().getMax(bob.getHand().getRoot());
-            while (curr) {
+            while (curr != nullptr) {
+                // IMPORTANT: Save the predecessor BEFORE any potential removal
+                card* prevInOrder = bob.getHand().predecessor(*curr);
+
                 if (alice.getHand().search(*curr)) {
                     cout << "Bob picked matching card " << *curr << endl;
-                    card match = *curr;
-                    alice.getHand().remove(match);
-                    bob.getHand().remove(match);
-                    found = true; break;
+                    card toRemove = *curr;
+                    
+                    alice.getHand().remove(toRemove);
+                    bob.getHand().remove(toRemove);
+                    
+                    foundMatchInThisTurn = true;
+                    break; // Bob's turn ends after one match
                 }
-                curr = bob.getHand().predecessor(*curr);
+                curr = prevInOrder;
             }
         }
-        if (!found) break;
+
+        // If a full turn (Alice or Bob) happens with no match found, the game ends
+        if (!foundMatchInThisTurn) {
+            break;
+        }
+        
+        // Switch turns
         aliceTurn = !aliceTurn;
     }
 
-    cout << endl << "Alice's cards:" << endl; alice.getHand().print();
-    cout << endl << "Bob's cards:" << endl; bob.getHand().print();
+    // Final hand printing
+    cout << endl << "Alice's cards:" << endl;
+    alice.getHand().print();
+    cout << endl << "Bob's cards:" << endl;
+    bob.getHand().print();
+
     return 0;
 }
 /*
