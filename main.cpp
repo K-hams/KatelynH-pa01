@@ -55,30 +55,34 @@ card* aliceCurr = alice.getHand().getHead();
 card* bobCurr   = bob.getHand().getHead();
 
 while (true) {
-    bool foundMatchInThisRound = false;
+    bool foundMatch = false;
 
     // Alice's Turn
     while (aliceCurr != nullptr) {
         if (bob.getHand().search(*aliceCurr)) {
             card matched = *aliceCurr;
             cout << "Alice picked matching card " << matched << endl;
+
+            // Move the marker before deleting
+            card* nextAlice = aliceCurr->getNext();
             
-            // Move bookmark forward BEFORE removing
-            aliceCurr = aliceCurr->getNext();
-            
-            // Important: If Bob's bookmark was on this exact card, move it
+            // Critical: If Bob's marker was on this card, move it!
             if (bobCurr != nullptr && *bobCurr == matched) {
                 bobCurr = bobCurr->getNext();
             }
 
             alice.getHand().remove(matched);
             bob.getHand().remove(matched);
-            
-            foundMatchInThisRound = true;
-            break; // Alice found a match, now it's Bob's turn
+
+            aliceCurr = nextAlice;
+            foundMatch = true;
+            break; // Alice found one, Bob's turn
         }
         aliceCurr = aliceCurr->getNext();
     }
+
+    if (!foundMatch) break; // Alice finished searching her hand and found nothing
+    foundMatch = false; 
 
     // Bob's Turn
     while (bobCurr != nullptr) {
@@ -86,7 +90,7 @@ while (true) {
             card matched = *bobCurr;
             cout << "Bob picked matching card " << matched << endl;
 
-            bobCurr = bobCurr->getNext();
+            card* nextBob = bobCurr->getNext();
 
             if (aliceCurr != nullptr && *aliceCurr == matched) {
                 aliceCurr = aliceCurr->getNext();
@@ -95,14 +99,14 @@ while (true) {
             alice.getHand().remove(matched);
             bob.getHand().remove(matched);
 
-            foundMatchInThisRound = true;
-            break; // Bob found a match, now it's Alice's turn
+            bobCurr = nextBob;
+            foundMatch = true;
+            break; // Bob found one, Alice's turn
         }
         bobCurr = bobCurr->getNext();
     }
 
-    // If a full cycle happens and NO ONE found a match, the game is over
-    if (!foundMatchInThisRound) break;
+    if (!foundMatch) break; // Bob finished searching his hand and found nothing
 }
 
     cout << endl << "Alice's cards:" << endl;
