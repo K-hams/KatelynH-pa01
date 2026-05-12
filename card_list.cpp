@@ -3,7 +3,9 @@
 // Implementation of the classes defined in card_list.h
 
 //ALL IMPLEMENTS FOR HAND
-#include "card_list.h"
+
+
+/*#include "card_list.h"
 using namespace std;
 
 bool hand::search(card target){
@@ -20,15 +22,18 @@ bool hand::search(card target){
 }
 
 void hand::insert(card newCard){
-    card* newC = new card(newCard.getName(), newCard.getValue());
+    card* newC = new card(newCard);  
     
     if (root == nullptr) {
         root = newC;
-        tail = newC;
-    } else {
-        tail->setNext(newC);
-        tail = newC;
+        return;
     }
+    
+    card* curr = root;
+    while (curr->getNext() != nullptr) {
+        curr = curr->getNext();
+    }
+    curr->setNext(newC);
 
 }
 void hand::remove(card target){
@@ -74,6 +79,7 @@ std::ostream& operator<<(std::ostream& os, const player& p) {
     p.myHand.print();  
     return os;
 }
+*/
 
 
 

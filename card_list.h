@@ -1,7 +1,8 @@
 // card_list.h
 // Author: Katelyn Hamel
 // All class declarations related to defining a BST that represents a player's hand
-
+/**/
+/*
 #ifndef CARD_LIST_H
 #define CARD_LIST_H
 
@@ -13,8 +14,8 @@
 class hand{
     public:
         //construct
-        hand(): root(nullptr), tail(nullptr){}
-        hand(card* start): root(start), tail(nullptr){}
+        hand(): root(nullptr){}
+        hand(card* start): root(start){}
 
         ~hand(){
              card* curr = root;
@@ -36,7 +37,6 @@ class hand{
         }
 
     private:
-        card* tail;
         card* root;
 
 };
@@ -74,3 +74,4 @@ class player{
 };
 
 #endif
+*/
