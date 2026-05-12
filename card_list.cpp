@@ -22,18 +22,17 @@ bool hand::search(card target){
 }
 
 void hand::insert(card newCard){
-    card* newC = new card(newCard);  
+    card* newC = new card(newCard.getName(), newCard.getValue()); 
     
     if (root == nullptr) {
         root = newC;
-        return;
+    } else {
+        card* curr = root;
+        while (curr->getNext() != nullptr) {
+            curr = curr->getNext();
+        }
+        curr->setNext(newC);
     }
-    
-    card* curr = root;
-    while (curr->getNext() != nullptr) {
-        curr = curr->getNext();
-    }
-    curr->setNext(newC);
 
 }
 void hand::remove(card target){

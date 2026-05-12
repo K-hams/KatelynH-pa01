@@ -51,76 +51,63 @@ while (getline(cardFile2, line) && line.length() > 0) {
 cardFile2.close();
 
 
-    card* aliceCurr = alice.getHand().getHead();
-    card* bobCurr = bob.getHand().getHead();
+card* aliceCurr = alice.getHand().getHead();
+card* bobCurr   = bob.getHand().getHead();
 
+while (true) {
+    bool matchFound = false;
 
-    while (true) {
-        bool matchFound = false;
+    // Alice's Turn: She starts looking from her current bookmark (aliceCurr)
+    while (aliceCurr != nullptr) {
+        if (bob.getHand().search(*aliceCurr)) {
+            card matched = *aliceCurr;
+            cout << "Alice picked matching card " << matched << endl;
 
-
-        // Alice's Turn: Search from where she left off
-        while (aliceCurr != nullptr) {
-            if (bob.getHand().search(*aliceCurr)) {
-                card matched = *aliceCurr;
-                cout << "Alice picked matching card " << matched << endl;
-
-
-                // Move aliceCurr forward before the node is deleted
-                card* nextAlice = aliceCurr->getNext();
-               
-                // If Bob was currently looking at the card that's about to be deleted,
-                // move Bob's pointer forward as well.
-                if (bobCurr != nullptr && *bobCurr == matched) {
-                    bobCurr = bobCurr->getNext();
-                }
-
-
-                alice.getHand().remove(matched);
-                bob.getHand().remove(matched);
-
-
-                aliceCurr = nextAlice;
-                matchFound = true;
-                break; // Turn ends
+            // Move the bookmark forward BEFORE deleting the card
+            card* nextAlice = aliceCurr->getNext();
+            
+            // If Bob's bookmark was on the card Alice just took, move his bookmark too
+            if (bobCurr != nullptr && *bobCurr == matched) {
+                bobCurr = bobCurr->getNext();
             }
-            aliceCurr = aliceCurr->getNext();
+
+            alice.getHand().remove(matched);
+            bob.getHand().remove(matched);
+
+            aliceCurr = nextAlice;
+            matchFound = true;
+            break; // Turn ends, Bob goes next
         }
-
-
-        if (!matchFound) break; // End game if Alice finds no match
-        matchFound = false;
-
-
-        // Bob's Turn
-        while (bobCurr != nullptr) {
-            if (alice.getHand().search(*bobCurr)) {
-                card matched = *bobCurr;
-                cout << "Bob picked matching card " << matched << endl;
-
-
-                card* nextBob = bobCurr->getNext();
-
-
-                if (aliceCurr != nullptr && *aliceCurr == matched) {
-                    aliceCurr = aliceCurr->getNext();
-                }
-
-
-                alice.getHand().remove(matched);
-                bob.getHand().remove(matched);
-
-
-                bobCurr = nextBob;
-                matchFound = true;
-                break; // Turn ends
-            }
-            bobCurr = bobCurr->getNext();
-        }
-
-
-        if (!matchFound) break;
+        aliceCurr = aliceCurr->getNext();
     }
+
+    if (!matchFound) break; // If Alice finishes her hand with no match, game ends
+    matchFound = false;
+
+    // Bob's Turn: He starts looking from his bookmark (bobCurr)
+    while (bobCurr != nullptr) {
+        if (alice.getHand().search(*bobCurr)) {
+            card matched = *bobCurr;
+            cout << "Bob picked matching card " << matched << endl;
+
+            card* nextBob = bobCurr->getNext();
+
+            if (aliceCurr != nullptr && *aliceCurr == matched) {
+                aliceCurr = aliceCurr->getNext();
+            }
+
+            alice.getHand().remove(matched);
+            bob.getHand().remove(matched);
+
+            bobCurr = nextBob;
+            matchFound = true;
+            break; // Turn ends, Alice goes next
+        }
+        bobCurr = bobCurr->getNext();
+    }
+
+    if (!matchFound) break; 
+}
 
     cout << endl << "Alice's cards:" << endl;
     alice.getHand().print();
