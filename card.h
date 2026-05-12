@@ -13,6 +13,8 @@ using namespace std;
 class card {
 public:
     card *left, *right;
+    char suit;
+    int value; 
     card() : left(nullptr), right(nullptr), suit(' '), value(0){}
     card(char s, int v) : left(nullptr), right(nullptr), suit(s), value(v){}
 
@@ -30,8 +32,7 @@ public:
 
 private:
     
-    char suit;
-    int value; 
+    
 };
 /*
 class card{

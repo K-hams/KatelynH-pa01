@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Helper function to convert rank strings to integers for mathematical sorting
+// Helper to convert card face strings to integers for BST sorting
 int getVal(string s) {
     if (s == "a") return 1;
     if (s == "j") return 11;
@@ -14,7 +14,7 @@ int getVal(string s) {
     try {
         return stoi(s);
     } catch (...) {
-        return 0; // Fallback for safety
+        return 0; 
     }
 }
 
@@ -37,10 +37,11 @@ int main(int argc, char** argv) {
     char suit;
     string face;
 
-    // Read files and populate BSTs
+    // Load Alice's cards into BST
     while (f1 >> suit >> face) {
         alice.getHand().insert(suit, getVal(face));
     }
+    // Load Bob's cards into BST
     while (f2 >> suit >> face) {
         bob.getHand().insert(suit, getVal(face));
     }
@@ -53,55 +54,51 @@ int main(int argc, char** argv) {
         bool foundMatchInThisTurn = false;
 
         if (aliceTurn) {
-            // Alice starts from her smallest card
+            // Alice Turn: Smallest to Largest
             card* curr = alice.getHand().getMin(alice.getHand().getRoot());
             while (curr != nullptr) {
-                // IMPORTANT: Save the successor BEFORE any potential removal
+                // IMPORTANT: Save successor before removal
                 card* nextInOrder = alice.getHand().successor(*curr);
 
                 if (bob.getHand().search(*curr)) {
                     cout << "Alice picked matching card " << *curr << endl;
-                    card toRemove = *curr;
+                    card match = *curr; // Create a copy of the data
                     
-                    alice.getHand().remove(toRemove);
-                    bob.getHand().remove(toRemove);
+                    // Call the public wrapper: void remove(card target)
+                    alice.getHand().remove(match);
+                    bob.getHand().remove(match);
                     
                     foundMatchInThisTurn = true;
-                    break; // Alice's turn ends after one match
+                    break; 
                 }
                 curr = nextInOrder;
             }
         } else {
-            // Bob starts from his largest card
+            // Bob Turn: Largest to Smallest
             card* curr = bob.getHand().getMax(bob.getHand().getRoot());
             while (curr != nullptr) {
-                // IMPORTANT: Save the predecessor BEFORE any potential removal
+                // IMPORTANT: Save predecessor before removal
                 card* prevInOrder = bob.getHand().predecessor(*curr);
 
                 if (alice.getHand().search(*curr)) {
                     cout << "Bob picked matching card " << *curr << endl;
-                    card toRemove = *curr;
+                    card match = *curr;
                     
-                    alice.getHand().remove(toRemove);
-                    bob.getHand().remove(toRemove);
-                    
+                    alice.getHand().remove(match);
+                    bob.getHand().remove(match);
+
                     foundMatchInThisTurn = true;
-                    break; // Bob's turn ends after one match
+                    break; 
                 }
                 curr = prevInOrder;
             }
         }
 
-        // If a full turn (Alice or Bob) happens with no match found, the game ends
-        if (!foundMatchInThisTurn) {
-            break;
-        }
-        
-        // Switch turns
+        if (!foundMatchInThisTurn) break;
         aliceTurn = !aliceTurn;
     }
 
-    // Final hand printing
+    // Output formatting for Gradescope
     cout << endl << "Alice's cards:" << endl;
     alice.getHand().print();
     cout << endl << "Bob's cards:" << endl;

@@ -35,21 +35,45 @@ bool hand::search(card* node, card target) const {
     return search(node->right, target);
 }
 
-void hand::remove(card target) { root = remove(root, target); }
+
+void hand::remove(card target) {
+    root = remove(root, target); // Calls the private recursive helper
+}
+
+
 card* hand::remove(card* node, card target) {
     if (!node) return nullptr;
-    if (target < *node) node->left = remove(node->left, target);
-    else if (target > *node) node->right = remove(node->right, target);
-    else {
-        if (!node->left) { card* temp = node->right; delete node; return temp; }
-        if (!node->right) { card* temp = node->left; delete node; return temp; }
+
+    if (target < *node) {
+        node->left = remove(node->left, target);
+    } else if (target > *node) {
+        node->right = remove(node->right, target);
+    } else {
+        // Node found! 
+        // Case 1 & 2: One child or no child
+        if (!node->left) {
+            card* temp = node->right;
+            delete node;
+            return temp;
+        } else if (!node->right) {
+            card* temp = node->left;
+            delete node;
+            return temp;
+        }
+
+        // Case 3: Two children
+        // Get the smallest in the right subtree
         card* temp = getMin(node->right);
-        *node = *temp;
+        
+    
+        node->suit = temp->suit;
+        node->value = temp->getValue();
+
+        // Delete the successor node
         node->right = remove(node->right, *temp);
     }
     return node;
 }
-
 card* hand::getMin(card* node) const {
     while (node && node->left) node = node->left;
     return node;
@@ -73,9 +97,13 @@ void hand::print(card* node) const {
 card* hand::successor(card target) const {
     card* curr = root;
     card* succ = nullptr;
-    while (curr) {
-        if (target < *curr) { succ = curr; curr = curr->left; }
-        else curr = curr->right;
+    while (curr != nullptr) {
+        if (target < *curr) {
+            succ = curr;       // This might be the successor
+            curr = curr->left; // Look for a smaller successor
+        } else {
+            curr = curr->right;
+        }
     }
     return succ;
 }
@@ -83,13 +111,16 @@ card* hand::successor(card target) const {
 card* hand::predecessor(card target) const {
     card* curr = root;
     card* pred = nullptr;
-    while (curr) {
-        if (target > *curr) { pred = curr; curr = curr->right; }
-        else curr = curr->left;
+    while (curr != nullptr) {
+        if (target > *curr) {
+            pred = curr;        // This might be the predecessor
+            curr = curr->right; // Look for a larger predecessor
+        } else {
+            curr = curr->left;
+        }
     }
     return pred;
 }
-
 /*
 bool hand::search(card target){
     card* curr = root;
