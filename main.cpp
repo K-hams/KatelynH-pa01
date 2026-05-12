@@ -55,42 +55,38 @@ card* aliceCurr = alice.getHand().getHead();
 card* bobCurr   = bob.getHand().getHead();
 
 while (true) {
-    bool matchFound = false;
+    bool foundMatchInThisRound = false;
 
-    // Alice's Turn: She starts looking from her current bookmark (aliceCurr)
+    // Alice's Turn
     while (aliceCurr != nullptr) {
         if (bob.getHand().search(*aliceCurr)) {
             card matched = *aliceCurr;
             cout << "Alice picked matching card " << matched << endl;
-
-            // Move the bookmark forward BEFORE deleting the card
-            card* nextAlice = aliceCurr->getNext();
             
-            // If Bob's bookmark was on the card Alice just took, move his bookmark too
+            // Move bookmark forward BEFORE removing
+            aliceCurr = aliceCurr->getNext();
+            
+            // Important: If Bob's bookmark was on this exact card, move it
             if (bobCurr != nullptr && *bobCurr == matched) {
                 bobCurr = bobCurr->getNext();
             }
 
             alice.getHand().remove(matched);
             bob.getHand().remove(matched);
-
-            aliceCurr = nextAlice;
-            matchFound = true;
-            break; // Turn ends, Bob goes next
+            
+            foundMatchInThisRound = true;
+            break; // Alice found a match, now it's Bob's turn
         }
         aliceCurr = aliceCurr->getNext();
     }
 
-    if (!matchFound) break; // If Alice finishes her hand with no match, game ends
-    matchFound = false;
-
-    // Bob's Turn: He starts looking from his bookmark (bobCurr)
+    // Bob's Turn
     while (bobCurr != nullptr) {
         if (alice.getHand().search(*bobCurr)) {
             card matched = *bobCurr;
             cout << "Bob picked matching card " << matched << endl;
 
-            card* nextBob = bobCurr->getNext();
+            bobCurr = bobCurr->getNext();
 
             if (aliceCurr != nullptr && *aliceCurr == matched) {
                 aliceCurr = aliceCurr->getNext();
@@ -99,14 +95,14 @@ while (true) {
             alice.getHand().remove(matched);
             bob.getHand().remove(matched);
 
-            bobCurr = nextBob;
-            matchFound = true;
-            break; // Turn ends, Alice goes next
+            foundMatchInThisRound = true;
+            break; // Bob found a match, now it's Alice's turn
         }
         bobCurr = bobCurr->getNext();
     }
 
-    if (!matchFound) break; 
+    // If a full cycle happens and NO ONE found a match, the game is over
+    if (!foundMatchInThisRound) break;
 }
 
     cout << endl << "Alice's cards:" << endl;

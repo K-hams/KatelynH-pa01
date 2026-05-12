@@ -22,15 +22,18 @@ bool hand::search(card target){
 }
 
 void hand::insert(card newCard){
-    card* newC = new card(newCard.getName(), newCard.getValue()); 
+    card* newC = new card(newCard.getName(), newCard.getValue());
     
+    // If the list is empty, this is the root
     if (root == nullptr) {
         root = newC;
     } else {
+        // Otherwise, go to the very end of the list
         card* curr = root;
         while (curr->getNext() != nullptr) {
             curr = curr->getNext();
         }
+        // Link the new card at the end
         curr->setNext(newC);
     }
 
