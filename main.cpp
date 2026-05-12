@@ -10,6 +10,60 @@
 using namespace std;
 
 
+int getVal(string s) {
+    if (s == "a") return 1;
+    if (s == "j") return 11;
+    if (s == "q") return 12;
+    if (s == "k") return 13;
+    return stoi(s);
+}
+
+int main(int argc, char** argv) {
+    if (argc < 3) return 1;
+    ifstream f1(argv[1]), f2(argv[2]);
+    player alice("Alice"), bob("Bob");
+    string s, v; char suit;
+
+    while (f1 >> suit >> v) alice.getHand().insert(suit, getVal(v));
+    while (f2 >> suit >> v) bob.getHand().insert(suit, getVal(v));
+
+    bool aliceTurn = true;
+    while (true) {
+        bool found = false;
+        if (aliceTurn) {
+            card* curr = alice.getHand().getMin(alice.getHand().getRoot());
+            while (curr) {
+                if (bob.getHand().search(*curr)) {
+                    cout << "Alice picked matching card " << *curr << endl;
+                    card match = *curr;
+                    alice.getHand().remove(match);
+                    bob.getHand().remove(match);
+                    found = true; break;
+                }
+                curr = alice.getHand().successor(*curr);
+            }
+        } else {
+            card* curr = bob.getHand().getMax(bob.getHand().getRoot());
+            while (curr) {
+                if (alice.getHand().search(*curr)) {
+                    cout << "Bob picked matching card " << *curr << endl;
+                    card match = *curr;
+                    alice.getHand().remove(match);
+                    bob.getHand().remove(match);
+                    found = true; break;
+                }
+                curr = bob.getHand().predecessor(*curr);
+            }
+        }
+        if (!found) break;
+        aliceTurn = !aliceTurn;
+    }
+
+    cout << endl << "Alice's cards:" << endl; alice.getHand().print();
+    cout << endl << "Bob's cards:" << endl; bob.getHand().print();
+    return 0;
+}
+/*
 int main(int argv, char** argc){
   if(argv < 3){
     cout << "Please provide 2 file names" << endl;
@@ -117,4 +171,4 @@ while (true) {
 
     return 0;
 }
-
+*/

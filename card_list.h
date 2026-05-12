@@ -10,6 +10,49 @@
 #include <string>
 
 #include "card.h"
+
+class hand {
+public:
+    hand() : root(nullptr) {}
+    ~hand();
+
+    void insert(char suit, int value);
+    void remove(card target);
+    bool search(card target) const;
+    void print() const;
+
+    card* getMin(card* node) const;
+    card* getMax(card* node) const;
+    card* getRoot() const { return root; }
+
+    // Successor for Alice, Predecessor for Bob
+    card* successor(card target) const;
+    card* predecessor(card target) const;
+
+private:
+    card* root;
+    card* insert(card* node, char suit, int value);
+    card* remove(card* node, card target);
+    void clear(card* node);
+    void print(card* node) const;
+    bool search(card* node, card target) const;
+};
+
+class player {
+public:
+    player(std::string n) : name(n) {}
+    std::string getName() const { return name; }
+    hand& getHand() { return myHand; }
+    friend std::ostream& operator<<(std::ostream& os, player& p);
+
+private:
+    std::string name;
+    hand myHand;
+};
+
+#endif
+
+/*
 //hand aka linked list
 class hand{
     public:
@@ -74,3 +117,4 @@ class player{
 };
 
 #endif
+*/

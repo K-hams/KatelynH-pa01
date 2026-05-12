@@ -10,6 +10,28 @@
 #include <iostream>
 using namespace std;
 //node aka card
+class card {
+public:
+    card() : suit(' '), value(0), left(nullptr), right(nullptr) {}
+    card(char s, int v) : suit(s), value(v), left(nullptr), right(nullptr) {}
+
+    char getSuit() const { return suit; }
+    int getValue() const { return value; }
+
+    // BST Overloads
+    bool operator<(const card& other) const;
+    bool operator>(const card& other) const;
+    bool operator==(const card& other) const;
+
+    friend std::ostream& operator<<(std::ostream& os, const card& c);
+
+    card *left, *right;
+
+private:
+    char suit;
+    int value; // Stored as 1-13
+};
+/*
 class card{
     public:
         //default constructor
@@ -46,11 +68,8 @@ class card{
         char name;
         card* nextCard;
        
-
-
-
-
 };
+*/
 
 
 
