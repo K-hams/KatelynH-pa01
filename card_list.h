@@ -13,8 +13,8 @@
 class hand{
     public:
         //construct
-        hand(): root(nullptr){}
-        hand(card* start): root(start){}
+        hand(): root(nullptr), tail(nullptr){}
+        hand(card* start): root(start), tail(nullptr){}
 
         ~hand(){
              card* curr = root;
@@ -36,6 +36,7 @@ class hand{
         }
 
     private:
+        card* tail;
         card* root;
 
 };

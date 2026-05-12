@@ -43,57 +43,69 @@ while (getline(cardFile2, line) && line.length() > 0) {
 }
 cardFile2.close();
 
-       card* aliceCurr = alice.getHand().getHead();
-    card* bobCurr   = bob.getHand().getHead();
+    card* aliceCurr = alice.getHand().getHead();
+    card* bobCurr = bob.getHand().getHead();
 
-    bool matchFound = true;
-    while (matchFound) {
-        matchFound = false;
+    while (true) {
+        bool matchFound = false;
 
-        // Alice's turn
+        // Alice's Turn: Search from where she left off
         while (aliceCurr != nullptr) {
-            card* nextAlice = aliceCurr->getNext();
             if (bob.getHand().search(*aliceCurr)) {
                 card matched = *aliceCurr;
-                // advance bobCurr if it points to the card being removed
+                cout << "Alice picked matching card " << matched << endl;
+
+                // Move aliceCurr forward before the node is deleted
+                card* nextAlice = aliceCurr->getNext();
+                
+                // If Bob was currently looking at the card that's about to be deleted, 
+                // move Bob's pointer forward as well.
                 if (bobCurr != nullptr && *bobCurr == matched) {
                     bobCurr = bobCurr->getNext();
                 }
+
                 alice.getHand().remove(matched);
                 bob.getHand().remove(matched);
+
                 aliceCurr = nextAlice;
-                cout << "Alice picked matching card " << matched << endl;
                 matchFound = true;
-                break;
+                break; // Turn ends
             }
-            aliceCurr = nextAlice;
+            aliceCurr = aliceCurr->getNext();
         }
-        if (!matchFound) break;
+
+        if (!matchFound) break; // End game if Alice finds no match
         matchFound = false;
 
-        // Bob's turn
+        // Bob's Turn: Search from where he left off
         while (bobCurr != nullptr) {
-            card* nextBob = bobCurr->getNext();
             if (alice.getHand().search(*bobCurr)) {
                 card matched = *bobCurr;
-                // advance aliceCurr if it points to the card being removed
+                cout << "Bob picked matching card " << matched << endl;
+
+                card* nextBob = bobCurr->getNext();
+
                 if (aliceCurr != nullptr && *aliceCurr == matched) {
                     aliceCurr = aliceCurr->getNext();
                 }
+
                 alice.getHand().remove(matched);
                 bob.getHand().remove(matched);
+
                 bobCurr = nextBob;
-                cout << "Bob picked matching card " << matched << endl;
                 matchFound = true;
-                break;
+                break; // Turn ends
             }
-            bobCurr = nextBob;
+            bobCurr = bobCurr->getNext();
         }
+
+        if (!matchFound) break; // End game if Bob finds no match
     }
 
-    cout << "\nAlice's cards:" << endl;
+    // Final Output (Matching Gradescope spacing exactly)
+    cout << endl << "Alice's cards:" << endl;
     alice.getHand().print();
-    cout << "\nBob's cards:" << endl;
+    cout << endl << "Bob's cards:" << endl;
     bob.getHand().print();
 
     return 0;
