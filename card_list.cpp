@@ -5,7 +5,7 @@
 //ALL IMPLEMENTS FOR HAND
 
 
-/*#include "card_list.h"
+#include "card_list.h"
 using namespace std;
 
 bool hand::search(card target){
@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& os, const player& p) {
     p.myHand.print();  
     return os;
 }
-*/
+
 
 
 
